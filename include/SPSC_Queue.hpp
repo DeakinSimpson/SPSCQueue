@@ -25,7 +25,7 @@ namespace TSC
         explicit Queue(std::size_t capacity, Alloc const& alloc = Alloc {})
             : Alloc {alloc}
             , capacity_ {capacity}
-            , ring_ {std::allocator_traits<T>::allocate(*this, capacity) }
+            , ring_ {std::allocator_traits<Alloc>::allocate(*this, capacity) }
         {  }
 
         /**
@@ -41,13 +41,13 @@ namespace TSC
                 ++popCursor_;
             }
 
-            std::allocator_traits<T>::deallocate(*this, ring_, capacity_);
+            std::allocator_traits<Alloc>::deallocate(*this, ring_, capacity_);
         }
 
         auto capacity() const { return capacity_; }
         auto size() const { return pushCursor_ - popCursor_; }
         auto empty() const { return size() == 0; }
-        auto full() const { return size() == capacity_(); }
+        auto full() const { return size() == capacity_; }
 
         auto push(T const& value)
         {
@@ -65,12 +65,14 @@ namespace TSC
             if (empty()) { return false; }
 
             // copy the value to value found at popCursors location
-            value = ring_[popCursor_ % capacity_];
+            value = std::move(ring_[popCursor_ % capacity_]);
 
             // deconstruct the value found at popCursor
-            ring_[popCursor_ & capacity_].~T();
+            ring_[popCursor_ % capacity_].~T();
 
-            return true
+            ++popCursor_;
+
+            return true;
         }
     };
 }
