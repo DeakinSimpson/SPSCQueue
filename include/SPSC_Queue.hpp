@@ -60,7 +60,7 @@ namespace TSC
             return true;
         }
 
-        auto pop(T* value)
+        auto pop(T& value)
         {
             if (empty()) { return false; }
 
