@@ -3,6 +3,8 @@ project(SPSCQueue)
 
 set(CMAKE_CXX_STANDARD 26)
 
+
+
 add_executable(SPSCQueue
         main.cpp
         include/SPSC_Queue.hpp)
