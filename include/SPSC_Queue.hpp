@@ -93,7 +93,7 @@ namespace TSC
          * without the chance of yet again causing false sharing
          */
         char padding_
-            [hardware_destructive_interference_size - sizeof(size_type)];
+            [hardware_destructive_interference_size - sizeof(size_type)] {};
 
         auto isFull(size_type pushCursor, size_type popCursor) const
         {
